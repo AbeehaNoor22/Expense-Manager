@@ -2,7 +2,7 @@
 #include <string>
 using namespace std;
 
-const int MAX_CATEGORIES = 7;
+const int maxCategories = 7;
 
 struct Category {
     string name;
@@ -11,7 +11,7 @@ struct Category {
     float spent;
 };
 
-Category categories[MAX_CATEGORIES] = {
+Category categories[maxCategories] = {
     {"Food"},
     {"Transport"},
     {"Accessories"},
@@ -92,7 +92,7 @@ void showMenu() {
      cout << "\nSet category priorities\n";
      cout << "(1 = High Priority, 0 = Low Priority)\n\n";
 
-     for (int i = 0; i < MAX_CATEGORIES; i++) {
+     for (int i = 0; i < maxCategories; i++) {
          do {
              cout << categories[i].name << ": ";
              cin >> input;
@@ -104,5 +104,45 @@ void showMenu() {
 
          categories[i].highPriority = input;
          categories[i].spent = 0;
+     }
+ }
+
+ void showBudgetAllocation() {
+     cout << "\n Budget Allocation \n";
+     for (int i = 0; i < maxCategories; i++) {
+         cout << categories[i].name
+             << " (" << (categories[i].highPriority ? "High" : "Low")
+             << ") : Rs " << categories[i].allocatedBudget << endl;
+     }
+ }
+
+ void allocateBudget() {
+     int highCount = 0, lowCount = 0;
+
+     for (int i = 0; i < maxCategories; i++) {
+         if (categories[i].highPriority)
+             highCount++;
+         else
+             lowCount++;
+     }
+
+     float highShare = (highCount > 0) ? (0.7f * monthlyBudget) / highCount : 0;
+     float lowShare = (lowCount > 0) ? (0.3f * monthlyBudget) / lowCount : 0;
+
+     for (int i = 0; i < maxCategories; i++) {
+         if (categories[i].highPriority)
+             categories[i].allocatedBudget = highShare;
+         else
+             categories[i].allocatedBudget = lowShare;
+     }
+ }
+
+ void readjustBudget() {
+     cout << "!! Equal redistribution of remaining budget\n";
+
+     float equalShare = remainingBudget / maxCategories;
+
+     for (int i = 0; i < maxCategories; i++) {
+         categories[i].allocatedBudget = equalShare;
      }
  }
