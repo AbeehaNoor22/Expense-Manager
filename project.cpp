@@ -39,6 +39,9 @@ void showMenu();
 int main() {
     int choice;
 
+    setMonthlyBudget();
+    setPriorities();
+
     do {
         showMenu();
         cin >> choice;
@@ -72,3 +75,34 @@ void showMenu() {
     cout << "0. Exit\n";
     cout << "Choose option: ";
 }
+ void setMonthlyBudget() {
+        cout << "Enter monthly budget: Rs ";
+        cin >> monthlyBudget;
+
+        while (monthlyBudget <= 0) { //input validation
+            cout << "Invalid amount! Enter again: ";
+            cin >> monthlyBudget;
+        }
+
+        remainingBudget = monthlyBudget;
+    }
+ void setPriorities() {
+     int input;
+
+     cout << "\nSet category priorities\n";
+     cout << "(1 = High Priority, 0 = Low Priority)\n\n";
+
+     for (int i = 0; i < MAX_CATEGORIES; i++) {
+         do {
+             cout << categories[i].name << ": ";
+             cin >> input;
+
+             if (input != 0 && input != 1) //input validation
+                 cout << "Enter ONLY 1 or 0!\n";
+
+         } while (input != 0 && input != 1);
+
+         categories[i].highPriority = input;
+         categories[i].spent = 0;
+     }
+ }
