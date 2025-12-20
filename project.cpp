@@ -2,7 +2,7 @@
 #include <string>
 using namespace std;
 
-const int maxCategories = 7; 
+const int maxCategories = 7;
 const int max_expenses = 300; //limiting max expense input for a month
 
 struct Category {
@@ -27,9 +27,8 @@ struct Expense { //struct for expense input function
     string category;
     float amount;
 };
-
 Expense expenses[max_expenses]; //array to store expenses
-int expenseCount = 0; 
+int expenseCount = 0;
 
 
 float monthlyBudget;
@@ -38,7 +37,7 @@ float remainingBudget;
 //protypes
 void setMonthlyBudget();
 void setPriorities();
-void allocateBudget();
+void allocateBudget(float); //added argument to make it more general
 void showBudgetAllocation();
 void addDailyExpense();
 void readjustBudget();
@@ -52,7 +51,7 @@ int main() {
 
     setMonthlyBudget();
     setPriorities();
-    allocateBudget();
+    allocateBudget(monthlyBudget);
     showBudgetAllocation();
 
     do {
@@ -61,10 +60,12 @@ int main() {
 
         switch (choice) {
         case 1:
-            addDailyExpense();
-            break;
+            if (remainingBudget > 0) {
+                addDailyExpense();
+                break;
+            }
         case 2:
-              dailySummary();
+            dailySummary();
             break;
         case 3:
             monthlySummary();
@@ -128,7 +129,7 @@ void showBudgetAllocation() {
     }
 }
 
-void allocateBudget() {
+void allocateBudget(float total_budget) {
     int highCount = 0, lowCount = 0;
 
     for (int i = 0; i < maxCategories; i++) {
@@ -138,8 +139,8 @@ void allocateBudget() {
             lowCount++;
     }
 
-    float highShare = (highCount > 0) ? (0.7f * monthlyBudget) / highCount : 0;
-    float lowShare = (lowCount > 0) ? (0.3f * monthlyBudget) / lowCount : 0;
+    float highShare = (highCount > 0) ? (0.7f * total_budget) / highCount : 0;
+    float lowShare = (lowCount > 0) ? (0.3f * total_budget) / lowCount : 0;
 
     for (int i = 0; i < maxCategories; i++) {
         if (categories[i].highPriority)
@@ -150,18 +151,23 @@ void allocateBudget() {
 }
 
 void readjustBudget() {
-    cout << "!! Equal redistribution of remaining budget\n";
-
-    float equalShare = remainingBudget / maxCategories;
-
-    for (int i = 0; i < maxCategories; i++) {
-        categories[i].allocatedBudget = equalShare;
+    if (remainingBudget <= 0) { //added checks if budget ends
+        cout << "\nNo remaining budget to redistribute.\n";
+        return;
+    }
+    else {
+        cout << "Equal redistribution of remaining budget\n";
+        allocateBudget(remainingBudget);
     }
 }
 void addDailyExpense() {
     int day, month, year;
     int choice;
 
+    if (remainingBudget <= 0) { //validation if no money are left
+        cout << "\nNo remaining budget. Cannot add more expenses.\n";
+        return;
+    }
     cout << "\nEnter date (DD MM YYYY): ";
     cin >> day >> month >> year;
 
@@ -192,22 +198,24 @@ void addDailyExpense() {
             }
         } while (amount <= 0);
 
-        float dailyLimit = categories[index].allocatedBudget / 30; //daily budget for the category
+        float dailyLimit = categories[index].allocatedBudget / 30;   //daily budget for the category
 
         if (amount > dailyLimit) {
-            cout << "Daily limit exceeded!Re-adjusting budgets...\n";
-            readjustBudget();
+            cout << "Daily limit exceeded! Re-adjusting budgets...\n";
         }
 
-        Expense e = {   //initializing struct
-        day,month,year,categories[index].name,amount
-        };
+        Expense e = { day, month, year, categories[index].name, amount };  //initializing struct
+        expenses[expenseCount++] = e;   //expenses are being stored in the array,with index equal to the expense count
 
-        expenses[expenseCount++] = e; //expenses are being stored in the array,with index equal to the expense count
-
+        // Deducting money first
         categories[index].spent += amount;
-        categories[index].allocatedBudget -= amount;
         remainingBudget -= amount;
+
+        //redistributing remaining money
+        readjustBudget();
+
+        // displaying updated allocation
+        showBudgetAllocation();
 
         cout << "Expense added successfully!\n";
     }
@@ -221,7 +229,26 @@ void monthlySummary() {
     cout << "Remaining Budget: Rs " << remainingBudget << endl;
 
     cout << "\nCategory-wise spending:\n"; //category wise summary
-    for (int i = 0; i <maxCategories; i++) {
-        cout << categories[i].name<<" : Rs " << categories[i].spent << endl;
+    for (int i = 0; i < maxCategories; i++) {
+        cout << categories[i].name << " : Rs " << categories[i].spent << endl;
     }
+}
+void dailySummary() {
+    int d, m, y;
+    float total = 0;
+
+    cout << "\nEnter date (DD MM YYYY): ";
+    cin >> d >> m >> y;
+
+    cout << "\nDAILY SUMMARY\n";
+
+    for (int i = 0; i < expenseCount; i++) {
+        if (expenses[i].day == d && expenses[i].month == m && expenses[i].year == y) {
+
+            cout << expenses[i].category << " - Rs " << expenses[i].amount << endl;
+
+            total += expenses[i].amount;
+        }
+    }
+    cout << "Total spent today: Rs " << total << endl;
 }
