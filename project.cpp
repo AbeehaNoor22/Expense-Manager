@@ -13,13 +13,13 @@ struct Category {
 };
 
 Category categories[maxCategories] = {
-    {"Food"},
-    {"Transport"},
-    {"Accessories"},
-    {"Clothes"},
-    {"Bills"},
-    {"Savings"},
-    {"Misc"}
+    {"Food",0,0.0,0.0},
+    {"Transport",0,0.0,0.0},
+    {"Accessories",0,0.0,0.0},
+    {"Clothes",0,0.0,0.0},
+    {"Bills",0,0.0,0.0},
+    {"Savings",0,0.0,0.0},
+    {"Others",0,0.0,0.0}
 };
 
 struct Expense { //struct for expense input function
@@ -44,6 +44,7 @@ void readjustBudget();
 void dailySummary();
 void monthlySummary();
 void showMenu();
+void showPerDayExpense();
 
 
 int main() {
@@ -53,6 +54,7 @@ int main() {
     setPriorities();
     allocateBudget(monthlyBudget);
     showBudgetAllocation();
+    showPerDayExpense();
 
     do {
         showMenu();
@@ -117,7 +119,6 @@ void setPriorities() {
         } while (input != 0 && input != 1);
 
         categories[i].highPriority = input;
-        categories[i].spent = 0;
     }
 }
 
@@ -126,6 +127,14 @@ void showBudgetAllocation() {
     for (int i = 0; i < maxCategories; i++) {
         cout << categories[i].name
             << " (" << (categories[i].highPriority ? "High" : "Low") << ") : Rs " << categories[i].allocatedBudget << endl;
+    }
+}
+
+void showPerDayExpense() {
+    cout << "\n Budget Allocation per Day \n";
+    for (int i = 0; i < maxCategories; i++) {
+        cout << categories[i].name << ": Rs ";
+        cout << categories[i].allocatedBudget / 30 << endl;
     }
 }
 
