@@ -233,6 +233,7 @@ void monthlySummary() {
         cout << categories[i].name << " : Rs " << categories[i].spent << endl;
     }
 }
+//daily summary
 void dailySummary() {
     int d, m, y;
     float total = 0;
