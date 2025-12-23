@@ -199,16 +199,24 @@ void addDailyExpense() {
 		}
 
 		int index = choice - 1; //storing the choice
+		float dailyLimit = categories[index].allocatedBudget / 30;   //daily budget for the category		
+
 		float amount;
+		bool opt;
 		do {        //amount input
-			cout << "Enter amount for " << categories[index].name << ": Rs "; waitSeconds(1);
+		start:
+			cout << "Enter amount you want to spend for " << categories[index].name << ": Rs ";
 			cin >> amount;
 			if (amount <= 0) {  //input validation
 				cout << "Invalid amount!\n"; waitSeconds(1);
 			}
+			if (amount > dailyLimit) {//showing allert of a=exceeding limit and asking whether to proceeed or not
+				cout << "This is more than the allocated budget!\n To proceed press '1' to enter another amount press '0'\n";
+				cin >> opt;
+				if (opt == 0) { goto start; }
+				else break;
+			}
 		} while (amount <= 0);
-
-		float dailyLimit = categories[index].allocatedBudget / 30;   //daily budget for the category
 
 		if (amount > dailyLimit) {
 			cout << "Daily limit exceeded! Re-adjusting budgets...\n"; waitSeconds(2);
