@@ -51,6 +51,9 @@ void waitSeconds(int sec);
 
 int main() {
 	int choice;
+	cout << "=============================\n";
+	cout << "WELCOME TO EXPENSE MANAGER\n";
+	cout << "=============================\n\n";
 
 	setMonthlyBudget();
 	setPriorities();
@@ -90,7 +93,9 @@ int main() {
 }
 
 void showMenu() {
-	cout << "\nMENU\n"; waitSeconds(1);
+	cout << "\n=============================\n";
+	cout << "\t  MENU\n";
+	cout << "=============================\n"; waitSeconds(1);
 	cout << "1. Add Daily Expense\n"; waitSeconds(1);
 	cout << "2. View Daily Summary\n"; waitSeconds(1);
 	cout << "3. View Monthly Summary\n"; waitSeconds(1);
@@ -111,7 +116,7 @@ void setMonthlyBudget() {
 void setPriorities() {
 	int input;
 
-	cout << "\nSet category priorities\n"; waitSeconds(1);
+	cout << "\nSet category priorities\n"; 
 	cout << "(1 = High Priority, 0 = Low Priority)\n\n";
 
 	for (int i = 0; i < maxCategories; i++) {
@@ -129,17 +134,21 @@ void setPriorities() {
 }
 
 void showBudgetAllocation() {
-	cout << "\n Budget Allocation \n"; waitSeconds(1);
+	cout << "\n=============================\n";
+	cout << "     Budget Allocation\n";
+	cout << "=============================\n";waitSeconds(1);
 	for (int i = 0; i < maxCategories; i++) {
 		cout << categories[i].name
-			<< " (" << (categories[i].highPriority ? "High" : "Low") << ") : Rs " << categories[i].allocatedBudget << endl; waitSeconds(1);
+			<< " (" << (categories[i].highPriority ? "High" : "Low") << ") : Rs " << categories[i].allocatedBudget << endl; 
 	}
 }
 
 void showPerDayExpense() {
-	cout << "\n Budget Allocation per Day \n"; waitSeconds(1);
+	cout << "\n=============================\n";
+	cout << "  Budget Allocation per Day\n";
+	cout << "=============================\n"; waitSeconds(1);
 	for (int i = 0; i < maxCategories; i++) {
-		cout << categories[i].name << ": Rs " << categories[i].allocatedBudget / 30 << endl; waitSeconds(1);
+		cout << categories[i].name << ": Rs " << categories[i].allocatedBudget / 30 << endl; 
 	}
 }
 
@@ -184,9 +193,9 @@ void addDailyExpense() {
 	while (true) {
 		cout << "\nSelect category:\n"; waitSeconds(1);
 		for (int i = 0; i < maxCategories; i++) {   //displaying all categories
-			cout << i + 1 << ". " << categories[i].name << endl; waitSeconds(1);
+			cout << i + 1 << ". " << categories[i].name << endl; 
 		}
-		cout << "or 0 to stop\n"; waitSeconds(1);
+		cout << "or 0 to stop\n"; 
 		cout << "Choice: ";
 		cin >> choice;
 
@@ -239,6 +248,8 @@ void addDailyExpense() {
 
 			// displaying updated allocation
 			showBudgetAllocation();
+			showPerDayExpense();//shows daily expense as well
+
 		}
 
 		cout << "Expense added successfully!\n";
@@ -246,8 +257,9 @@ void addDailyExpense() {
 }
 void monthlySummary() {
 	float totalSpent = monthlyBudget - remainingBudget;
-
-	cout << "\nMONTHLY SUMMARY\n"; waitSeconds(1); //general summary
+	cout << "\n=============================\n";
+	cout << "\tMONTHLY SUMMARY\n";
+	cout << "=============================\n"; waitSeconds(1); //general summary
 	cout << "Monthly Budget: Rs " << monthlyBudget << endl; waitSeconds(1);
 	cout << "Total Spent: Rs " << totalSpent << endl; waitSeconds(1);
 	cout << "Remaining Budget: Rs " << remainingBudget << endl; waitSeconds(1);
@@ -265,7 +277,9 @@ void dailySummary() {
 	cout << "\nEnter date (DD MM YYYY): "; waitSeconds(1);
 	cin >> d >> m >> y;
 
-	cout << "\nDAILY SUMMARY\n"; waitSeconds(1);
+	cout << "\n=============================\n";
+	cout << "\tDAILY SUMMARY";
+	cout << "\n=============================\n"; waitSeconds(1);
 
 	for (int i = 0; i < expenseCount; i++) {
 		if (expenses[i].day == d && expenses[i].month == m && expenses[i].year == y) {
